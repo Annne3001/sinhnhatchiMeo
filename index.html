@@ -355,7 +355,7 @@
       padding: 40px 28px 30px 28px;
       border-radius: 20px;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 105, 180, 0.3);
-      z-index: 9999; /* Đảm bảo luôn nằm trên các tấm ảnh */
+      z-index: 9999;
       color: #2c3e50;
       transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       border: 3px solid #ff75a0;
@@ -386,9 +386,9 @@
     }
 
     .letter-modal h2 {
-      text-align: left; /* Căn trái tiêu đề */
+      text-align: left;
       color: #ff3366;
-      font-size: 18px;  /* Cỡ chữ tiêu đề vừa phải */
+      font-size: 18px;
       margin-top: 5px;
       margin-bottom: 12px;
       font-weight: 800;
@@ -399,14 +399,14 @@
 
     .letter-modal p {
       line-height: 1.6;
-      text-align: left; /* Căn trái nội dung lời chúc */
-      font-size: 13px;  /* Cỡ chữ nội dung nhỏ gọn xinh xắn */
+      text-align: left;
+      font-size: 13px;
       color: #4a4a4a;
       background: rgba(255, 240, 245, 0.5);
       padding: 14px 12px;
       border-radius: 12px;
       border: 1px dashed #ffb6c1;
-      white-space: pre-line; /* Nhận diện nút Enter xuống dòng tự nhiên */
+      white-space: pre-line;
     }
 
     .close-btn {
@@ -602,7 +602,7 @@ Thương chị nhiều nhiều! 💖💖💖<br>
       return Math.hypot(canvas.width / 2, canvas.height / 2);
     }
 
-    // 1. DÀNH CHO HOA NỀN NỞ LAN MÀN HÌNH
+    // 1. HOA NỀN NỞ LAN MÀN HÌNH
     const flowerSources = ['hoa1.png', 'hoa2.png', 'hoa3.png', 'hoa4.png', 'hoa5.png'];
     const loadedImages = [];
 
@@ -612,31 +612,42 @@ Thương chị nhiều nhiều! 💖💖💖<br>
       loadedImages.push(img);
     });
 
-    // 2. KHUNG ẢNH VÀ BÓNG BAY
+    // 2. TẢI TẤT CẢ ẢNH TRONG THƯ MỤC IMAGES/ CHẮC CHẮN 100%
     const photoSources = [];
     const maxPhotosToScan = 50;
-    const extensions = ['jpg', 'png', 'jpeg'];
+    const extensions = ['jpg', 'png', 'jpeg', 'JPG', 'PNG', 'webp'];
 
-    for (let i = 1; i <= maxPhotosToScan; i++) {
-      extensions.forEach(ext => {
-        const src = `images/${i}.${ext}`;
+    function checkImageExists(url) {
+      return new Promise((resolve) => {
         const img = new Image();
-        img.onload = () => {
-          if (!photoSources.includes(src)) {
-            photoSources.push(src);
-          }
-        };
-        img.src = src;
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
       });
     }
 
-    let currentPhotoIndex = 0;
-    function getNextPhoto() {
-      if (photoSources.length === 0) {
-        return 'anh1.jpg';
+    async function preloadAllPhotos() {
+      for (let i = 1; i <= maxPhotosToScan; i++) {
+        for (const ext of extensions) {
+          const src = `images/${i}.${ext}`;
+          const exists = await checkImageExists(src);
+          if (exists && !photoSources.includes(src)) {
+            photoSources.push(src);
+            break; 
+          }
+        }
       }
-      const photo = photoSources[currentPhotoIndex % photoSources.length];
-      currentPhotoIndex++;
+      console.log(`Đã sẵn sàng ${photoSources.length} ảnh để bắn:`, photoSources);
+    }
+
+    // Tải danh sách ảnh ngay khi vào trang web
+    preloadAllPhotos();
+
+    let balloonPhotoIndex = 0;
+    function getNextPhotoForBalloon() {
+      if (photoSources.length === 0) return 'anh1.jpg';
+      const photo = photoSources[balloonPhotoIndex % photoSources.length];
+      balloonPhotoIndex++;
       return photo;
     }
 
@@ -840,7 +851,7 @@ Thương chị nhiều nhiều! 💖💖💖<br>
         balloon.style.height = `${size * 1.25}px`;
 
         const img = document.createElement('img');
-        img.src = getNextPhoto();
+        img.src = getNextPhotoForBalloon();
         balloon.appendChild(img);
 
         const knot = document.createElement('div');
@@ -897,39 +908,42 @@ Thương chị nhiều nhiều! 💖💖💖<br>
     }
     animate();
 
-    // HÀM BẮN HẾT BỘ ẢNH TRONG THƯ MỤC RỒI TỰ DỪNG
+    // HÀM BẮN HẾT TOÀN BỘ ẢNH TRONG FILE VÀ DỪNG LẠI
     function start15SecPhotoShoot(onComplete) {
-      const intervalTime = 800; // Khoảng thời gian giữa đợt bắn ảnh (ms)
-      let shotCount = 0;
+      const intervalTime = 800; // Cứ 0.8 giây lại bắn ra 1 đợt
+      let currentIndex = 0;
       const totalPhotos = photoSources.length;
 
-      // Nếu không có ảnh nào, chuyển ngay sang mở thư
+      // Nếu không tìm thấy ảnh nào, mở phong thư ngay
       if (totalPhotos === 0) {
         if (onComplete) onComplete();
         return;
       }
 
       const shootInterval = setInterval(() => {
-        // Kiểm tra xem đã bắn hết tất cả các ảnh chưa
-        if (shotCount >= totalPhotos) {
+        // Đã bắn hết tất cả số ảnh có trong thư mục
+        if (currentIndex >= totalPhotos) {
           clearInterval(shootInterval);
           
-          // Chờ đợt ảnh cuối bay xong hoàn toàn mới mở lá thư
+          // Đợi đợt ảnh cuối bay xong hết (2.5 giây) rồi hiển thị lá thư
           setTimeout(() => {
             if (onComplete) onComplete();
           }, 2500);
           return;
         }
 
-        const remainingPhotos = totalPhotos - shotCount;
-        const count = Math.min(Math.floor(Math.random() * 2) + 1, remainingPhotos);
+        const remaining = totalPhotos - currentIndex;
+        const count = Math.min(Math.floor(Math.random() * 2) + 1, remaining);
 
         for (let i = 0; i < count; i++) {
+          if (currentIndex >= totalPhotos) break;
+
           const photo = document.createElement('div');
           photo.className = 'flying-photo';
 
           const img = document.createElement('img');
-          img.src = getNextPhoto();
+          // Lấy chính xác ảnh theo chỉ số currentIndex
+          img.src = photoSources[currentIndex]; 
           photo.appendChild(img);
 
           const giftRect = giftContainer.getBoundingClientRect();
@@ -957,7 +971,7 @@ Thương chị nhiều nhiều! 💖💖💖<br>
 
           setTimeout(() => photo.remove(), 2500);
 
-          shotCount++;
+          currentIndex++;
         }
       }, intervalTime);
     }
@@ -1006,3 +1020,4 @@ Thương chị nhiều nhiều! 💖💖💖<br>
   </script>
 </body>
 </html>
+
