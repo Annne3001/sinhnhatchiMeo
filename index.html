@@ -317,7 +317,7 @@
       display: block;
     }
 
-    /* PHONG THƯ */
+    /* PHONG THƯ BAN ĐẦU */
     .envelope {
       position: absolute;
       top: 40%;
@@ -343,7 +343,7 @@
       transform: translate(-50%, -50%) scale(1);
     }
 
-    /* THƯ CHÚC MỪNG - ĐÃ TRANG TRÍ VÀ ĐẶT TRÊN CÙNG (Z-INDEX 9999) */
+    /* THƯ CHÚC MỪNG (MODAL) - NẰM TRÊN CÙNG (Z-INDEX 9999), CĂN TRÁI, CỠ CHỮ GỌN */
     .letter-modal {
       position: fixed;
       top: 50%;
@@ -352,17 +352,16 @@
       width: 88%;
       max-width: 480px;
       background: #fffdfa;
-      padding: 45px 32px 35px 32px;
+      padding: 40px 28px 30px 28px;
       border-radius: 20px;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 105, 180, 0.3);
-      z-index: 9999; /* Đảm bảo nằm trên tất cả các phần tử khác */
+      z-index: 9999; /* Đảm bảo luôn nằm trên các tấm ảnh */
       color: #2c3e50;
       transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       border: 3px solid #ff75a0;
       overflow: hidden;
     }
 
-    /* Đuôi nơ trang trí ở trên lá thư */
     .letter-modal::before {
       content: '🎀';
       position: absolute;
@@ -373,13 +372,12 @@
       filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
     }
 
-    /* Họa tiết góc lá thư */
     .letter-modal::after {
       content: '✨ 🎉 🎈';
       position: absolute;
       bottom: 8px;
       right: 15px;
-      font-size: 16px;
+      font-size: 15px;
       opacity: 0.7;
     }
 
@@ -388,11 +386,11 @@
     }
 
     .letter-modal h2 {
-      text-align: center;
+      text-align: left; /* Căn trái tiêu đề */
       color: #ff3366;
-      font-size: 18px;
+      font-size: 18px;  /* Cỡ chữ tiêu đề vừa phải */
       margin-top: 5px;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -401,13 +399,14 @@
 
     .letter-modal p {
       line-height: 1.6;
-      text-align: left;
-      font-size: 13px;
+      text-align: left; /* Căn trái nội dung lời chúc */
+      font-size: 13px;  /* Cỡ chữ nội dung nhỏ gọn xinh xắn */
       color: #4a4a4a;
       background: rgba(255, 240, 245, 0.5);
-      padding: 18px 15px;
+      padding: 14px 12px;
       border-radius: 12px;
       border: 1px dashed #ffb6c1;
+      white-space: pre-line; /* Nhận diện nút Enter xuống dòng tự nhiên */
     }
 
     .close-btn {
@@ -418,9 +417,9 @@
       font-weight: bold;
       color: #ffffff;
       cursor: pointer;
-      width: 32px;
-      height: 32px;
-      line-height: 30px;
+      width: 30px;
+      height: 30px;
+      line-height: 28px;
       text-align: center;
       border-radius: 50%;
       background: linear-gradient(135deg, #ff75a0, #ff4d4d);
@@ -571,20 +570,20 @@
   <div class="letter-modal" id="letterModal">
     <span class="close-btn" id="closeBtn">&times;</span>
     <h2>Lời Chúc Sinh Nhật dành cho người đẹp trong lòng em</h2>
-    <p>🎀🎂 **Happy Birthday chị iu của emmm!** 🎂🎀<br>
+<p>🎀🎂 Happy Birthday chị iu của emmm! 🎂🎀<br>
 
 Hôm nay là ngày đặc biệt nhất vì một cô gái siêu đáng yêu đã xuất hiện trên đời này đóoo! 🥳💗<br>
 
 Chúc chị tuổi mới lúc nào cũng vui vẻ, cười thật nhiều, ngày càng xinh đẹp và luôn được yêu thương thật nhiều nhaaa 🥰🌷
-Mong mọi điều chị mong ước đều từ từ thành hiện thực, đi đâu cũng gặp may mắn, làm gì cũng thuận lợi và đặc biệt là **không được buồn lâu đâu đó!** 😚💕<br>
+Mong mọi điều chị mong ước đều từ từ thành hiện thực, đi đâu cũng gặp may mắn, làm gì cũng thuận lợi và đặc biệt là không được buồn lâu đâu đó! 😚💕<br>
 
 Tuổi mới phải thật hạnh phúc nha chị iu!<br>
 Nếu có chuyện gì không vui thì nhớ để dành một phần cho em… để em còn có cơ hội chọc chị cười nữa chứ 🤭💞<br>
 
 🎁 Chúc chị nhận được thật nhiều quà, thật nhiều lời chúc và thật nhiều yêu thương trong ngày hôm nay nhaaa!<br>
 
-**Sinh nhật vui vẻ nha chị iu! 🎂💐💖<br>
-Thương chị nhiều nhiều! 💖💖💖**<br>
+Sinh nhật vui vẻ nha chị iu! 🎂💐💖<br>
+Thương chị nhiều nhiều! 💖💖💖<br>
 </p>
   </div>
 
@@ -898,19 +897,32 @@ Thương chị nhiều nhiều! 💖💖💖**<br>
     }
     animate();
 
+    // HÀM BẮN HẾT BỘ ẢNH TRONG THƯ MỤC RỒI TỰ DỪNG
     function start15SecPhotoShoot(onComplete) {
-      const duration = 15000;
-      const intervalTime = 1000;
-      const startTime = Date.now();
+      const intervalTime = 800; // Khoảng thời gian giữa đợt bắn ảnh (ms)
+      let shotCount = 0;
+      const totalPhotos = photoSources.length;
+
+      // Nếu không có ảnh nào, chuyển ngay sang mở thư
+      if (totalPhotos === 0) {
+        if (onComplete) onComplete();
+        return;
+      }
 
       const shootInterval = setInterval(() => {
-        if (Date.now() - startTime >= duration) {
+        // Kiểm tra xem đã bắn hết tất cả các ảnh chưa
+        if (shotCount >= totalPhotos) {
           clearInterval(shootInterval);
-          if (onComplete) onComplete();
+          
+          // Chờ đợt ảnh cuối bay xong hoàn toàn mới mở lá thư
+          setTimeout(() => {
+            if (onComplete) onComplete();
+          }, 2500);
           return;
         }
 
-        const count = Math.floor(Math.random() * 2) + 2; 
+        const remainingPhotos = totalPhotos - shotCount;
+        const count = Math.min(Math.floor(Math.random() * 2) + 1, remainingPhotos);
 
         for (let i = 0; i < count; i++) {
           const photo = document.createElement('div');
@@ -944,11 +956,13 @@ Thương chị nhiều nhiều! 💖💖💖**<br>
           });
 
           setTimeout(() => photo.remove(), 2500);
+
+          shotCount++;
         }
       }, intervalTime);
     }
 
-    // TƯƠNG TÁC
+    // TƯƠNG TÁC SỰ KIỆN
     const giftContainer = document.getElementById('giftContainer');
     const giftBox = document.getElementById('giftBox');
     const envelope = document.getElementById('envelope');
